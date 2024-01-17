@@ -1,7 +1,7 @@
 """
 This module defines the Profile model and related functionalities.
 
-Much of the code in this file is copied from the django walkthrough projects
+Much of the code in this file is copied from the drf-api walkthrough projects
 with Code Institute.
 """
 
