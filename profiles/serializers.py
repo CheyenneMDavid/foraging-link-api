@@ -5,7 +5,7 @@ Much of the code in this file is copied from the drf-api walkthrough projects
 with Code Institute.
 """
 
-# Importing necessary Django modules
+
 from rest_framework import serializers
 from .models import Profile
 
@@ -17,10 +17,15 @@ class ProfileSerializer(serializers.ModelSerializer):
     read-only and gets the username of the profile owner.
     """
 
+    # Profile owner's username.
     owner = serializers.ReadOnlyField(source="owner.username")
     is_owner = serializers.SerializerMethodField()
 
     def get_is_owner(self, obj):
+        """
+        Checks if the user that's making the request is the owner of the
+        profile. If they are, it returns a true.  Else, it's a false.
+        """
         request = self.context["request"]
         return request.user == obj.owner
 

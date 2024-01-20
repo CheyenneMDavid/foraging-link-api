@@ -53,7 +53,8 @@ class ProfileDetail(APIView):
             self.check_object_permissions(self.request, profile)
             return profile
         except Profile.DoesNotExist:
-            raise Http404  # Raise a 404 error if the profile does not exist.
+            # Raise a 404 error if the profile does not exist.
+            raise Http404
 
     def get(self, request, pk):
         """
