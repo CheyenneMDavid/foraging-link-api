@@ -10,6 +10,7 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Profile
 from .serializers import ProfileSerializer
 
@@ -27,7 +28,9 @@ class ProfileList(APIView):
 
         # Gets all the profiles.
         profiles = Profile.objects.all()
-        serializer = ProfileSerializer(profiles, many=True)
+        serializer = ProfileSerializer(
+            profiles, many=True, context={"request": request}
+        )
         # Returns JSON serialised data.
         return Response(serializer.data)
 
@@ -38,6 +41,7 @@ class ProfileDetail(APIView):
     """
 
     serializer_class = ProfileSerializer
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get_object(self, pk):
         """
@@ -45,7 +49,9 @@ class ProfileDetail(APIView):
         one doesn't exist.
         """
         try:
-            return Profile.objects.get(pk=pk)
+            profile = Profile.objects.get(pk=pk)
+            self.check_object_permissions(self.request, profile)
+            return profile
         except Profile.DoesNotExist:
             raise Http404  # Raise a 404 error if the profile does not exist.
 
@@ -57,7 +63,7 @@ class ProfileDetail(APIView):
         # Retrieves the profile.
         profile = self.get_object(pk)
         # Serialize the profile.
-        serializer = ProfileSerializer(profile)
+        serializer = ProfileSerializer(profile, context={"request": request})
         # Returns the serialized data..
         return Response(serializer.data)
 
@@ -69,7 +75,9 @@ class ProfileDetail(APIView):
         # Retrieve the profile
         profile = self.get_object(pk)
         # Serialize the profile with the new data
-        serializer = ProfileSerializer(profile, data=request.data)
+        serializer = ProfileSerializer(
+            profile, data=request.data, context={"request": request}
+        )
         # Checks if the data is valid.
         if serializer.is_valid():
             # Saves the updated profile data.
