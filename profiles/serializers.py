@@ -45,7 +45,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "name",
-            "content",
+            "user_bio",
             "image",
             "is_owner",
         ]

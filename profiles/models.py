@@ -18,7 +18,7 @@ class Profile(models.Model):
 
     # Creating a one to one relationship with the user model
     # Using SET_NULL to ensure posts are retained when a user deletes
-    # their account, setting the username to innactive user.
+    # their account, setting the username to inactive user.
     owner = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     # Automatically sets the profile creation date and time.
     created_at = models.DateTimeField(auto_now_add=True)
@@ -35,10 +35,10 @@ class Profile(models.Model):
 
     class Meta:
         """
-        Meta class for defining model options.
+        Meta class for specifying model options.
+        Ensures that the newest profiles are shown first.
         """
 
-        # Ensures that the newest profiles are shown first.
         ordering = ["-created_at"]
 
     # User's name as a string.
