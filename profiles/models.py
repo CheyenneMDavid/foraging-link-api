@@ -17,16 +17,17 @@ class Profile(models.Model):
     """
 
     # Creating a one to one relationship with the user model
-    # Using SET_NULL to ensure posts are retained when a user deletes their
-    # account, setting the username to innactive user.
+    # Using SET_NULL to ensure posts are retained when a user deletes
+    # their account, setting the username to innactive user.
     owner = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     # Automatically sets the profile creation date and time.
     created_at = models.DateTimeField(auto_now_add=True)
     # Automatically updates the timestamp when the profile is changed.
     updated_at = models.DateTimeField(auto_now=True)
-    # Both the name and content allow for blank input.
+    # Both the name and user_bio fields allow for blank input.
     name = models.CharField(max_length=255, blank=True)
-    content = models.TextField(blank=True)
+    # Optional information about self, by user.
+    user_bio = models.TextField(blank=True)
     # Uses a default image for uploads if none is provided.
     image = models.ImageField(
         upload_to="images/", default="../default_profile_pic_ciw1he.jpg"
