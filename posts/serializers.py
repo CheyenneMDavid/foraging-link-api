@@ -22,8 +22,34 @@ class PostSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     # Read only fields that get the profile information of the post
     # owner.
-    profile_id = serializers.ReadOnlyField(source="owner.profile.id")
-    profile_image = serializers.ReadOnlyField(source="owner.profile.image.url")
+    profile_id = serializers.ReadOnlyField(
+        source="owner.profile.id",
+    )
+    profile_image = serializers.ReadOnlyField(
+        source="owner.profile.image.url",
+    )
+
+    def validate_image(self, value):
+        """
+        Validation for the file size and dimensions of the image before it's
+        uploaded.  If the filesize or image dimensions are outside the
+        allowances, a ValidationError is rasied.
+        """
+
+        # Allowances for image file size and dimensions.
+        if value.size > 2 * 1024 * 1024:
+            raise serializers.ValidationError(
+                "Image size larger than 2MB!",
+            )
+        if value.image.height > 4096:
+            raise serializers.ValidationError(
+                "Image height larger than 4096px!",
+            )
+        if value.image.width > 4096:
+            raise serializers.ValidationError(
+                "Image width larger than 4096px!",
+            )
+        return value
 
     def get_is_owner(self, obj):
         """
