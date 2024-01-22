@@ -77,3 +77,81 @@ class PostListViewTests(APITestCase):
         response = self.client.post("/posts/", {"title": "a title"})
         # Assert the response status is 403 Forbidden
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class PostDetailViewTests(APITestCase):
+    """
+    Tests for post detail view
+    """
+
+    def setUp(self):
+        """
+        Creates users and posts before each test is run.
+        """
+
+        # Creates users, adam and brian.
+        adam = User.objects.create_user(username="adam", password="pass")
+        brian = User.objects.create_user(username="brian", password="pass")
+
+        # Creates posts for each user
+        Post.objects.create(
+            owner=adam,
+            title="a title",
+            content="adams content",
+        )
+        Post.objects.create(
+            owner=brian, title="another title", content="brians content"
+        )
+
+    def test_can_retrieve_post_using_valid_id(self):
+        """
+        Tests retrieving the posts using a valid ID, ensuring that the correct
+        post is retrieved and the status code is a http200, OK.
+        """
+        # Attempt to retrieve the first post
+        response = self.client.get("/posts/1/")
+        # Check if the title matches
+        self.assertEqual(response.data["title"], "a title")
+        # Confirm the status code is 200 OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_cant_retrieve_post_using_invalid_id(self):
+        """
+        Test retrieving a post using an invalid ID.
+        Ensures that a 404 Not Found response is returned for an invalid post
+        ID.
+        """
+        # Attempt to retrieve a non-existent post
+        response = self.client.get("/posts/999/")
+        # Confirm the status code is 404 Not Found
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_user_can_update_own_post(self):
+        """
+        Tests that the user can update their own posts and confirms that the
+        post title is updated and the status is a http200, OK.
+        """
+        # Log in as Adam
+        self.client.login(username="adam", password="pass")
+        # Adam updates his own posts
+        response = self.client.put("/posts/1/", {"title": "a new title"})
+        # Gets an updates post back.
+        post = Post.objects.filter(pk=1).first()
+        # Checks if the title is also updated
+        self.assertEqual(post.title, "a new title")
+        # Confirms that the status is a http200, ok.
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_cant_update_another_users_post(self):
+        """
+        Test that one user can't update another's post.
+        Verifies that a 403 Forbidden response is returned when attempting to
+        update another user's post.
+        """
+
+        # Logs in as adam.
+        self.client.login(username="adam", password="pass")
+        # Tries to update brian's post.
+        response = self.client.put("/posts/2/", {"title": "a new title"})
+        # Confirms that the status code is a http 403, forbidden
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
