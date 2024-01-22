@@ -151,7 +151,7 @@ class PostDetailViewTests(APITestCase):
 
         # Logs in as adam.
         self.client.login(username="adam", password="pass")
-        # Tries to update brian's post.
+        # Adam tries to update brian's post.
         response = self.client.put("/posts/2/", {"title": "a new title"})
         # Confirms that the status code is a http 403, forbidden
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

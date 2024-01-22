@@ -1,6 +1,6 @@
 """
 Admin configuration to register the model with the Django admin interface,
-allowing administrators to manage user profiles from the admin panel.
+allowing administrators to manage user post from the admin panel.
 """
 
 from django.contrib import admin

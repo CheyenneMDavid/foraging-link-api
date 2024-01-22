@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "profiles",
     "posts",
+    "comments",
 ]
 
 MIDDLEWARE = [
@@ -103,7 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation."
         "UserAttributeSimilarityValidator",
     },
-    # Using "noqa: E501" so flake8 stops flagging the line length as an error as per the article in stackoverflow here:  "https://stackoverflow.com/questions/47876079/how-to-tell-flake8-to-ignore-comments"
+    # Using "noqa: E501" so flake8 stops flagging the line length as an error
+    # as per the article in stackoverflow here:  "https://stackoverflow.com/
+    # questions/47876079/how-to-tell-flake8-to-ignore-comments"
     {
         "NAME": "django.contrib.auth.password_validation."
         "MinimumLengthValidator",  # noqa: E501
