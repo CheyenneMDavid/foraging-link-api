@@ -54,7 +54,7 @@ class PostSerializer(serializers.ModelSerializer):
     def get_is_owner(self, obj):
         """
         Returns "True" if the requesting user is the owner of the
-        post. If they're not, it retuirns a "False"
+        post. If they're not, it returns a "False"
         """
         request = self.context["request"]
         return request.user == obj.owner
