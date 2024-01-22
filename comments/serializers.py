@@ -53,3 +53,22 @@ class CommentSerializer(serializers.ModelSerializer):
             "updated_at",
             "content",
         ]
+
+
+class CommentDetailSerializer(CommentSerializer):
+    """
+    Serializer for the Comment model, used in the Detail view
+    context.
+
+    Inherits from CommentSerializer and makes the post field read-only. This
+    ensures
+    that the associated post of a comment is not altered during update
+    operations in
+    the detail view.
+    """
+
+    # The 'post' field is read-only to prevent changing the associated post
+    # during updates.
+
+    # Displays only the ID of the associated post for clarity and efficiency.
+    post = serializers.ReadOnlyField(source="post.id")
