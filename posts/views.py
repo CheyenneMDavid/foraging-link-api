@@ -1,5 +1,5 @@
 """
-This module defines the Post views and related functionalities.
+This module defines the Post view and related functionalities.
 
 Much of the code in this file is copied from the drf-api walkthrough projects
 with Code Institute.

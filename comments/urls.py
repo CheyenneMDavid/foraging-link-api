@@ -1,16 +1,16 @@
 """
 This module defines the URL patterns that are associated with the 
-views in the profiles app.
+views in the comments app.
 
 Much of the code in this file is copied from the drf-api walkthrough projects
 with Code Institute.
 """
 
 from django.urls import path
-from profiles import views
+from comments import views
 
-# URL patterns for profiles lists and detail views
+# URL patterns for post list views.
 urlpatterns = [
-    path("profiles/", views.ProfileList.as_view()),
-    path("profiles/<int:pk>/", views.ProfileDetail.as_view()),
+    path("comments/", views.CommentList.as_view()),
+    path("comments/<int:pk>/", views.CommentDetail.as_view()),
 ]
