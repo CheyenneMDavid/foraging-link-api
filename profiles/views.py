@@ -1,91 +1,72 @@
 """
-This module defines the Profile view and related functionalities.
+This module defines the Profiles view and related functionalities.
 
-Much of the code in this file is copied from the drf-api walkthrough projects
-with Code Institute.
+Much of the code in this file is copied from the drf-api walkthrough
+project with Code Institute and the refactoring of this view is
+sepcifically based on the "CommentList and CommentDetail generic views"
+lesson here:
+https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/courseware/601b5665c57540519a2335bfbcb46d93/10d957d204794dbf9a4410792a58f8eb/
 """
 
-# Importing necessary Django modules
+# Importing necessary modules
 from django.http import Http404
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import generics, permissions
 from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Profile
 from .serializers import ProfileSerializer
 
 
-class ProfileList(APIView):
+class ProfileList(generics.ListAPIView):
     """
-    This view only supports GET requests to retrieve all of the profiles. The
-    actual profile creation is handled by Django signals, not this.
-    """
+    This view provides the list of all profiles.
 
-    def get(self, request):
-        """
-        Handles GET requests to retrieve all profiles.
-        """
-
-        # Gets all the profiles.
-        profiles = Profile.objects.all()
-        serializer = ProfileSerializer(
-            profiles, many=True, context={"request": request}
-        )
-        # Returns JSON serialised data.
-        return Response(serializer.data)
-
-
-class ProfileDetail(APIView):
-    """
-    This only supports retrieving a single profile detail and updating it.
+    It inherits from Django REST framework's ListAPIView, which is a
+    generic view for listing objects. This view is set to allow both
+    authenticated and unauthenticated users to view the list of profiles,
+    but does not support creating new profiles.
     """
 
+    # Using queryset to list all of the profiles
+    queryset = Profile.objects.all()
+    # Serializer class to convert queryset objects to JSON.
     serializer_class = ProfileSerializer
+    # Using "IsAuthenticated" in order to access a list of profiles
+    # so that only authenticated users are able to read one another's profiles.
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ProfileDetail(generics.RetrieveUpdateAPIView):
+    """
+    This view handles individual profile objects, supporting retrieval
+    and update operations.
+
+    Inherits from RetrieveUpdateAPIView, a generic view for handling
+    individual objects. It's configured to allow only the owner of a
+    profile to modify it (IsOwnerOrReadOnly), while others can view it.
+    """
+
+    # Queryset defines the scope; in this case, all Profile instances.
+    queryset = Profile.objects.all()
+    # Serializer class to handle serialization and deserialization.
+    serializer_class = ProfileSerializer
+    # Custom permission to ensure only owners can modify their profile.
     permission_classes = [IsOwnerOrReadOnly]
 
-    def get_object(self, pk):
+    def get_object(self):
         """
-        Retrieves a profile using it's pk and raises 404 erros if
-        one doesn't exist.
+        The "get_object" method has been customized in order to
+        override it's default behaviour when fetching a specific
+        profile.  The default is that the record be returned using
+        only it's primary key.  But because of the additional
+        permission checks being excercised here, the method needs to
+        be called in a more specific manner.
+
+        If the profile doesn't exist, then a Http404 is raised.
         """
+        pk = self.kwargs.get("pk")
         try:
             profile = Profile.objects.get(pk=pk)
             self.check_object_permissions(self.request, profile)
             return profile
         except Profile.DoesNotExist:
-            # Raise a 404 error if the profile does not exist.
             raise Http404
-
-    def get(self, request, pk):
-        """
-        Handles GET request for a single profile.
-        Retrieves a profile by its id and returns the serialized profile data.
-        """
-        # Retrieves the profile.
-        profile = self.get_object(pk)
-        # Serialize the profile.
-        serializer = ProfileSerializer(profile, context={"request": request})
-        # Returns the serialized data..
-        return Response(serializer.data)
-
-    def put(self, request, pk):
-        """
-        Handles PUT request for a single profile.
-        Updates a profile and returns it with new data.
-        """
-        # Retrieve the profile
-        profile = self.get_object(pk)
-        # Serialize the profile with the new data
-        serializer = ProfileSerializer(
-            profile, data=request.data, context={"request": request}
-        )
-        # Checks if the data is valid.
-        if serializer.is_valid():
-            # Saves the updated profile data.
-            serializer.save()
-            # Returns the updated profile data.
-            return Response(serializer.data)
-            # Return errors if the data is invalid.
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )  # Return errors if the data is invalid.
