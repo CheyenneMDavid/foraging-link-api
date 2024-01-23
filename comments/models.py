@@ -13,17 +13,19 @@ from posts.models import Post
 
 class Comment(models.Model):
     """
-    Comment model, related to User and Post
+    Comments are associated with the User who made the comment and the
+    the posts that the comments are on.
 
-    Comments are related to the User who is commenting and the post that
-    the comment's on.
+    Using SET_NULL to ensure posts are retained when a user deletes
+    their account, setting the username to inactive user. This way the
+    comments can then be retained on the inactive user post.
+    If the post it's self deleted, then comments also delete using CASCADE.
     """
 
-    # ForeignKey relationship to the User model. Each comment is owned by a
-    # user.
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    # ForeignKey relationship to the Post model. Each comment is related to a
-    # post.
+    # Associates comments with the users and handles the user accounts being
+    # deleted.
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    # Comments are deleted if the associated post is deleted due to CASCADE.
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     # Automatic timestamp indicating when the comment was created.
     created_at = models.DateTimeField(auto_now_add=True)
