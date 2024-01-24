@@ -20,10 +20,9 @@ class ProfileList(generics.ListAPIView):
     """
     This view provides the list of all profiles.
 
-    It inherits from Django REST framework's ListAPIView, which is a
-    generic view for listing objects. This view is set to allow both
-    authenticated and unauthenticated users to view the list of profiles,
-    but does not support creating new profiles.
+    Inherits from ListAPIView, a generic view for handling
+    lists of objects. The permission class is "IsAuthenticated", so only
+    authenticated users can read the list of profiles.
     """
 
     # Using queryset to list all of the profiles
@@ -42,7 +41,8 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
 
     Inherits from RetrieveUpdateAPIView, a generic view for handling
     individual objects. It's configured to allow only the owner of a
-    profile to modify it (IsOwnerOrReadOnly), while others can view it.
+    profile to modify it by using "IsOwnerOrReadOnly" as the permission
+    class.
     """
 
     # Queryset defines the scope; in this case, all Profile instances.
