@@ -1,16 +1,15 @@
 """
 This module defines the URL patterns that are associated with the
-views in the profiles app.
+views in the Likes app.
 
 Much of the code in this file is copied from the drf-api walkthrough projects
 with Code Institute.
 """
 
+# url patterns for likes lists
 from django.urls import path
-from profiles import views
+from likes import views
 
-# URL patterns for profiles lists and detail views
 urlpatterns = [
-    path("profiles/", views.ProfileList.as_view()),
-    path("profiles/<int:pk>/", views.ProfileDetail.as_view()),
+    path("likes/", views.LikeList.as_view()),
 ]

@@ -1,119 +1,77 @@
 """
 This module defines the Post view and related functionalities.
 
-Much of the code in this file is copied from the drf-api walkthrough projects
-with Code Institute.
+Much of the code in this file is copied from the drf-api walkthrough
+project with Code Institute and the refactoring of this view is
+sepcifically based on the "CommentList and CommentDetail generic views"
+lesson here:
+https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/courseware/601b5665c57540519a2335bfbcb46d93/10d957d204794dbf9a4410792a58f8eb/
 """
 
+# Import necessary Django and DRF modules
 from django.http import Http404
-from rest_framework import status, permissions
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import generics, permissions
 from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Post
 from .serializers import PostSerializer
 
 
-class PostList(APIView):
+class PostList(generics.ListCreateAPIView):
     """
-    View for listing posts and creating new ones.
-    It supports GET requests for fetching all of the posts and
-    POST requests for creating the new ones.
+    This view provides the list of all posts.
+
+    Inherits from ListCreateAPIView, a generic view for handling lists,
+    retrieving and creation. The permission class is
+    "IsAuthenticatedOrReadOnly", so posts can be read by anyone, but only
+    created by an authenticated user.
     """
 
+    # Using queryset to list all of the posts.
+    queryset = Post.objects.all()
+    # Serializer class to convert queryset objects to JSON.
     serializer_class = PostSerializer
+    # Using "IsAuthenticatedOrReadOnly" so that lists of posts are read only
+    # unless the user is signed in.
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get(self, request):
+    def perform_create(self, serializer):
         """
-        Handles requests to retrieve lists of posts.
-        It fetches them from the database, serializes them and then returns
-        the serialized data.
+        The "perform_create" method has been customized in order to
+        override it's default behaviour. The addidtional customization reslts
+        in the post being associated with the the owner that is making the
+        reqest.
         """
-
-        # Fetching all posts.
-        posts = Post.objects.all()
-        # Serializes the posts
-        serializer = PostSerializer(
-            posts,
-            many=True,
-            context={"request": request},
-        )
-        # Returns the serialized posts.
-        return Response(serializer.data)
-
-    def post(self, request):
-        """
-        Handles requests to create any new posts.
-        Deserializes the data and saves the new Post.
-        Returns the serialized data of the new post or errors if the data is
-        invalid.
-        """
-
-        # Deserialize the incoming data to create new posts.
-        serializer = PostSerializer(
-            data=request.data,
-            context={"request": request},
-        )
-        # If the post is valid, it saves the new post as belonging to the user
-        # that made the post request.
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            # Returns serialized data of the new post and a http 201, created
-            # status.
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # If the post was'nt valid, then a 400 bad request is returned.
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save(owner=self.request.user)
 
 
-class PostDetail(APIView):
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Gets, Updates and Deletes single posts.
+    Inheriting from "RetrieveUpdateDestroyAPIView", providing  get, put, patch
+    and delete method handlers.
     """
 
-    permission_classes = [IsOwnerOrReadOnly]
+    # Queryset for fetching Post objects
+    queryset = Post.objects.all()
+    # Serializer for Post objects
     serializer_class = PostSerializer
+    # Permission classes for controlling the ability to make changes to the
+    # post.
+    permission_classes = [IsOwnerOrReadOnly]
 
-    def get_object(self, pk):
+    def get_object(self):
         """
-        Gets a post using it's primary key (pk) and
-        raises a 404 error if it's
-        not found.
+        Overrides the behaviour of the get_object method to provide custom
+        error handling.
+
+        Tries to fetch a post based on the primary key, but if the post isn't
+        found, then it raises a Http404 error with a custom message.
         """
         try:
-            post = Post.objects.get(pk=pk)
-            self.check_object_permissions(self.request, post)
-            return post
-        except Post.DoesNotExist:
-            raise Http404
+            # Fetching the post using DRF's built-in method
+            obj = super().get_object()
 
-    def get(self, request, pk):
-        """
-        Handles a get request for a single post and returns it as serialized data.
-        """
-        post = self.get_object(pk)
-        serializer = PostSerializer(post, context={"request": request})
-        return Response(serializer.data)
-
-    def put(self, request, pk):
-        """
-        Handles a put request for th updating of a single post.
-        If the the data's valid, it updates the post and returns it.
-        """
-        post = self.get_object(pk)
-        serializer = PostSerializer(
-            post, data=request.data, context={"request": request}
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        """
-        Handles the delete request for a single post. Deleting and returning a
-        http204 after successful deleting.
-        """
-        post = self.get_object(pk)
-        post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            self.check_object_permissions(self.request, obj)
+            return obj
+        except Http404:
+            # Custom error message
+            raise Http404("Sorry.  There's no posts matching your search")
