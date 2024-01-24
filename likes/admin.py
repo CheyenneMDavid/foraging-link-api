@@ -1,9 +1,4 @@
-"""
-Admin configuration to register the model with the Django admin interface,
-allowing administrators to manage user likes from the admin panel.
-"""
-
 from django.contrib import admin
-from .models import Profile
+from .models import Like
 
-admin.site.register(Likes)
+admin.site.register(Like)
