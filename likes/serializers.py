@@ -6,6 +6,7 @@ with Code Institute.
 """
 
 # Importing needed modules
+from django.db import IntegrityError
 from rest_framework import serializers
 from likes.models import Like
 
@@ -29,3 +30,13 @@ class LikeSerializer(serializers.ModelSerializer):
 
         model = Like
         fields = ["id", "created_at", "owner", "post"]
+
+    def create(self, validated_data):
+        """
+        Creates a new like instance up receiving valid data consisting of user
+        that is liking the post and the post that is being liked.
+        """
+        try:
+            return super().create(validated_data)
+        except IntegrityError:
+            raise serializers.ValidationError({"detail": "possible duplicate"})
