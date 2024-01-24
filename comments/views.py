@@ -1,10 +1,14 @@
 """
 This module defines the Comments view and related functionalities.
 
-Much of the code in this file is copied from the drf-api walkthrough projects
-with Code Institute.
+Much of the code in this file is copied from the drf-api walkthrough
+project with Code Institute and the refactoring of this view is
+sepcifically based on the "CommentList and CommentDetail generic views"
+lesson here:
+https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/courseware/601b5665c57540519a2335bfbcb46d93/10d957d204794dbf9a4410792a58f8eb/
 """
 
+# Importing necessary modules
 from rest_framework import generics, permissions
 from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Comment
@@ -13,23 +17,37 @@ from .serializers import CommentSerializer, CommentDetailSerializer
 
 class CommentList(generics.ListCreateAPIView):
     """
-    List comments or create a comment if logged in.
+    This view inherits from "ListCreateAPIView", a generic view for handling
+    lists of objects. The permission class is set to
+    "IsAuthenticatedOrReadOnly", allowing both authenticated and
+    unauthenticated users to view the list of comments,
+    but only authenticated users can create any new ones.
     """
 
+    # Serializer class to convert queryset objects to JSON.
     serializer_class = CommentSerializer
+    # Using "IsAuthenticatedOrReadOnly
+    # so that comments are read only, unless a user is suthenticated.
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # Using queryset to list all of the profiles
     queryset = Comment.objects.all()
 
     def perform_create(self, serializer):
         """
-        Creates a new comment and associate it with the logged-in user.
+        Creates a new comment and associates it with the logged-in user.
+
+        This method is called when creating a new comment and ensures
+        that the comment is associated with the user who is currently logged
+        in.
         """
         serializer.save(owner=self.request.user)
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieves a comment, or update or delete it by id if you own it.
+    Inherits from "RetrieveUpdateDestroyAPIView"
+    Retrieves a comment, or update or delete it by id if you own it byt using
+    the permission "IsOwnerOrReadOnly"
     """
 
     permission_classes = [IsOwnerOrReadOnly]
