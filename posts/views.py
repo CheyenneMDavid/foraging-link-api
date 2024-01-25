@@ -6,10 +6,13 @@ project with Code Institute and the refactoring of this view is
 sepcifically based on the "CommentList and CommentDetail generic views"
 lesson here:
 https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/courseware/601b5665c57540519a2335bfbcb46d93/10d957d204794dbf9a4410792a58f8eb/
+
+Note:
+    The view relies on Django's built-in 404 handling for object not found
+    errors.
 """
 
 # Import necessary Django and DRF modules
-from django.http import Http404
 from rest_framework import generics, permissions
 from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Post
@@ -57,21 +60,3 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     # Permission classes for controlling the ability to make changes to the
     # post.
     permission_classes = [IsOwnerOrReadOnly]
-
-    def get_object(self):
-        """
-        Overrides the behaviour of the get_object method to provide custom
-        error handling.
-
-        Tries to fetch a post based on the primary key, but if the post isn't
-        found, then it raises a Http404 error with a custom message.
-        """
-        try:
-            # Fetching the post using DRF's built-in method
-            obj = super().get_object()
-
-            self.check_object_permissions(self.request, obj)
-            return obj
-        except Http404:
-            # Custom error message
-            raise Http404("Sorry.  There's no posts matching your search")
