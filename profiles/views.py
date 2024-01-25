@@ -40,7 +40,7 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
     and update operations.
 
     Inherits from RetrieveUpdateAPIView, a generic view for handling
-    individual objects. It's configured to allow only the owner of a
+    individual objects. Its configured to allow only the owner of a
     profile to modify it by using "IsOwnerOrReadOnly" as the permission
     class.
     """
@@ -57,7 +57,7 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
         The "get_object" method has been customized in order to
         override it's default behaviour when fetching a specific
         profile.  The default is that the record be returned using
-        only it's primary key.  But because of the additional
+        only it's primary key.  But because of the aditional
         permission checks being excercised here, the method needs to
         be called in a more specific manner.
 
