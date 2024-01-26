@@ -14,7 +14,7 @@ Note:
 
 # Import necessary Django and DRF modules
 from django.db.models import Count
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters
 from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Post
 from .serializers import PostSerializer
@@ -30,16 +30,29 @@ class PostList(generics.ListCreateAPIView):
     created by an authenticated user.
     """
 
-    # Using queryset to list all of the posts.
-    queryset = Post.objects.annotate(
-        comments_count=Count("owner__comment", distinct=True),
-        likes_count=Count("owner__like", distinct=True),
-    )
     # Serializer class to convert queryset objects to JSON.
     serializer_class = PostSerializer
     # Using "IsAuthenticatedOrReadOnly" so that lists of posts are read only
     # unless the user is signed in.
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # Using queryset to list all of the posts.
+    queryset = Post.objects.annotate(
+        likes_count=Count("likes", distinct=True),
+        comments_count=Count("comment", distinct=True),
+    ).order_by("-created_at")
+    filter_backends = [
+        filters.OrderingFilter,
+        filters.SearchFilter,
+    ]
+    search_fields = [
+        "owner__username",
+        "title",
+    ]
+    ordering_fields = [
+        "likes_count",
+        "comments_count",
+        "likes__created_at",
+    ]
 
     def perform_create(self, serializer):
         """
