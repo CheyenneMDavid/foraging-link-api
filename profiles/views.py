@@ -9,7 +9,8 @@ https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/cour
 """
 
 # Importing necessary modules
-from rest_framework import generics
+from django.db.models import Count
+from rest_framework import generics, filters
 from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Profile
 from .serializers import ProfileSerializer
@@ -30,9 +31,20 @@ class ProfileList(generics.ListAPIView):
     """
 
     # Using queryset to list all of the profiles
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.annotate(
+        posts_count=Count("owner__post", distinct=True),
+        followers_count=Count("owner__followed", distinct=True),
+        following_count=Count("owner__following", distinct=True),
+    )
+
     # Serializer class to convert queryset objects to JSON.
     serializer_class = ProfileSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = [
+        "posts_count",
+        "followers_count",
+        "following_count",
+    ]
 
 
 class ProfileDetail(generics.RetrieveUpdateAPIView):
@@ -47,8 +59,10 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
     """
 
     # Queryset defines the scope; in this case, all Profile instances.
-    queryset = Profile.objects.all()
-    # Serializer class to handle serialization and deserialization.
-    serializer_class = ProfileSerializer
-    # Custom permission to ensure only owners can modify their profile.
     permission_classes = [IsOwnerOrReadOnly]
+    queryset = Profile.objects.annotate(
+        posts_count=Count("owner__post", distinct=True),
+        followers_count=Count("owner__followed", distinct=True),
+        following_count=Count("owner__following", distinct=True),
+    ).order_by("-created_at")
+    serializer_class = ProfileSerializer
