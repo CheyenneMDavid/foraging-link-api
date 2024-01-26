@@ -13,6 +13,7 @@ Note:
 """
 
 # Import necessary Django and DRF modules
+from django.db.models import Count
 from rest_framework import generics, permissions
 from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Post
@@ -30,7 +31,10 @@ class PostList(generics.ListCreateAPIView):
     """
 
     # Using queryset to list all of the posts.
-    queryset = Post.objects.all()
+    queryset = Post.objects.annotate(
+        comments_count=Count("owner__comment", distinct=True),
+        likes_count=Count("owner__like", distinct=True),
+    )
     # Serializer class to convert queryset objects to JSON.
     serializer_class = PostSerializer
     # Using "IsAuthenticatedOrReadOnly" so that lists of posts are read only
@@ -54,7 +58,10 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     """
 
     # Queryset for fetching Post objects
-    queryset = Post.objects.all()
+    queryset = Post.objects.annotate(
+        likes_count=Count("likes", distinct=True),
+        comments_count=Count("comment", distinct=True),
+    ).order_by("-created_at")
     # Serializer for Post objects
     serializer_class = PostSerializer
     # Permission classes for controlling the ability to make changes to the

@@ -30,12 +30,14 @@ class PostSerializer(serializers.ModelSerializer):
         source="owner.profile.image.url",
     )
     like_id = serializers.SerializerMethodField()
+    likes_count = serializers.ReadOnlyField()
+    comments_count = serializers.ReadOnlyField()
 
     def validate_image(self, value):
         """
         Validation for the file size and dimensions of the image before it's
         uploaded.  If the filesize or image dimensions are outside the
-        allowances, a ValidationError is rasied.
+        allowances, a ValidationError is raised.
         """
 
         # Allowances for image file size and dimensions.
@@ -91,4 +93,6 @@ class PostSerializer(serializers.ModelSerializer):
             "content",
             "image",
             "like_id",
+            "likes_count",
+            "comments_count",
         ]
