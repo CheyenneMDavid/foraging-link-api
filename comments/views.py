@@ -10,6 +10,7 @@ https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/cour
 
 # Importing necessary modules
 from rest_framework import generics, permissions
+from django_filters.rest_framework import DjangoFilterBackend
 from foraging_api.permissions import IsOwnerOrReadOnly
 from .models import Comment
 from .serializers import CommentSerializer, CommentDetailSerializer
@@ -31,6 +32,9 @@ class CommentList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # Using queryset to list all of the profiles
     queryset = Comment.objects.all()
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["post"]
 
     def perform_create(self, serializer):
         """
