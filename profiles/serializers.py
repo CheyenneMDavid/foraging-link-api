@@ -8,6 +8,7 @@ with Code Institute.
 
 from rest_framework import serializers
 from .models import Profile
+from followers.models import Follower
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -20,14 +21,32 @@ class ProfileSerializer(serializers.ModelSerializer):
     # Profile owner's username.
     owner = serializers.ReadOnlyField(source="owner.username")
     is_owner = serializers.SerializerMethodField()
+    following_id = serializers.SerializerMethodField()
 
     def get_is_owner(self, obj):
         """
-        Checks if the user that's making the request is the owner of the
-        profile. If they are, it returns a true.  Else, it's a false.
+        Checks if the user making the request is the owner of the
+        profile. Returns True if they are, otherwise False.
         """
         request = self.context["request"]
         return request.user == obj.owner
+
+    def get_following_id(self, obj):
+        """
+        Gets the ID of the user who's following the profile.
+
+        If the a user isn't authenticated of if there's no followers, then
+        "None" is returned.
+        """
+        user = self.context["request"].user
+        if user.is_authenticated:
+            following = Follower.objects.filter(
+                owner=user,
+                followed=obj.owner,
+            ).first()
+            # print(following)
+            return following.id if following else None
+        return None
 
     class Meta:
         """
@@ -37,8 +56,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         """
 
         model = Profile
-        # Fields are being explicitly stated to allow the adding of fields to
-        # the profile model which I may not wish to have in the serializer.
         fields = [
             "id",
             "owner",
@@ -48,4 +65,5 @@ class ProfileSerializer(serializers.ModelSerializer):
             "user_bio",
             "image",
             "is_owner",
+            "following_id",
         ]
