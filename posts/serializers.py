@@ -7,6 +7,7 @@ with Code Institute.
 
 from rest_framework import serializers
 from posts.models import Post
+from likes.models import Like
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -28,6 +29,7 @@ class PostSerializer(serializers.ModelSerializer):
     profile_image = serializers.ReadOnlyField(
         source="owner.profile.image.url",
     )
+    like_id = serializers.SerializerMethodField()
 
     def validate_image(self, value):
         """
@@ -57,7 +59,18 @@ class PostSerializer(serializers.ModelSerializer):
         post. If they're not, it returns a "False"
         """
         request = self.context["request"]
+
         return request.user == obj.owner
+
+    def get_like_id(self, obj):
+        """
+        Gets the  of the user's like for a particular post. Or None if it's not liked.
+        """
+        user = self.context["request"].user
+        if user.is_authenticated:
+            like = Like.objects.filter(owner=user, post=obj).first()
+            return like.id if like else None
+        return None
 
     class Meta:
         """
@@ -77,4 +90,5 @@ class PostSerializer(serializers.ModelSerializer):
             "title",
             "content",
             "image",
+            "like_id",
         ]
