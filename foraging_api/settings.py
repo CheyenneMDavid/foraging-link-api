@@ -64,7 +64,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "8000-cheyennemda-foraginglin-6vpdcr5t4rd.ws-eu107.gitpod.io",
-    "https://foraging-link-1601764f3844.herokuapp.com/",
+    "foraging-link-1601764f3844.herokuapp.com",
     "localhost",
 ]
 
