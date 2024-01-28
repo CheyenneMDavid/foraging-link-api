@@ -70,8 +70,6 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
-if "CLIENT_ORIGIN" in os.environ:
-    CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_ORIGIN")]
 
 if "CLIENT_ORIGIN_DEV" in os.environ:
     extracted_url = re.match(
@@ -80,6 +78,10 @@ if "CLIENT_ORIGIN_DEV" in os.environ:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
+
+# Enable sending cookies in cross-origin requests so that users can get
+# authentication functionality
+CORS_ALLOW_CREDENTIALS = True  # Moved to keep code together
 
 
 # Application definition
@@ -131,9 +133,6 @@ else:
         r"^https://.*\.gitpod\.io$",
     ]
 
-# Enable sending cookies in cross-origin requests so that users can get
-# authentication functionality
-CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "foraging_api.urls"
 
