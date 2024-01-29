@@ -1,6 +1,6 @@
 """
-Purpose of the Course model is to store 
-information about courses offered within the main application
+Purpose of the Course model is to store information about courses offered
+within the main application
 """
 
 from django.db import models

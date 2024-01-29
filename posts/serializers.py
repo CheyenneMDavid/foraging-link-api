@@ -66,7 +66,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_like_id(self, obj):
         """
-        Gets the  of the user's like for a particular post. Or None if it's not liked.
+        Gets the  of the user's like for a particular post. Or None if it's
+        not liked.
         """
         user = self.context["request"].user
         if user.is_authenticated:
