@@ -11,13 +11,27 @@ class Course(models.Model):
     model representing the content/details of a course
     """
 
-    id = models.AutoField(primary_key=True)
+    # Using dropdown predefined season names for consistency from admin panel.
+    SEASON_CHOICES = [
+        ("", "Select Season"),
+        ("Spring", "Spring"),
+        ("Summer", "Summer"),
+        ("Autumn", "Autumn"),
+    ]
+
+    season = models.CharField(
+        max_length=25, choices=SEASON_CHOICES, default="", blank=False
+    )
+
+    # Course title, independent, different each time.
     title = models.CharField(max_length=255)
+    # Only the Date field required.
+    date = models.DateField()
+    # Large undefined text field
     description = models.TextField()
-    date = models.DateTimeField()
     location = models.CharField(max_length=255)
     max_capacity = models.PositiveIntegerField()
-    season = models.CharField(max_length=100)
+    duration = models.CharField(max_length=20, default="10hrs", editable=False)
 
     # pylint: disable=invalid-str-returned
     def __str__(self):
