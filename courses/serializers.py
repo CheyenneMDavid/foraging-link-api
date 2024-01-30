@@ -23,10 +23,11 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             "id",
+            "season",
             "title",
-            "description",
             "date",
+            "description",
             "location",
             "max_capacity",
-            "season",
+            "duration",
         ]
