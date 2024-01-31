@@ -43,7 +43,7 @@ class Course(models.Model):
     location = models.CharField(max_length=255)
 
     # Preset and fixed number because this will never change.
-    max_capacity = models.PositiveIntegerField(default=10)
+    max_capacity = models.PositiveIntegerField(default=10, editable=False)
 
     # Always will be presented with either a half-day or a full-day.
     duration = models.CharField(
