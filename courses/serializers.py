@@ -11,7 +11,7 @@ class CourseSerializer(serializers.ModelSerializer):
     Serializer for the Course model.
 
     It's responsible for converting Course model data
-    to JSON format.
+    to anf from JSON format.
     """
 
     class Meta:

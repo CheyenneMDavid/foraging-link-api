@@ -38,12 +38,18 @@ class CommentSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         return request.user == obj.owner
 
-    # Using Django's humanize module to display when a comment was made in a
-    # more user friendly way
     def get_created_at(self, obj):
+        """
+        Returns time using "naturaltime" from Django's "humanize module" to
+        display timestamp in a more user friendly way.
+        """
         return naturaltime(obj.created_at)
 
     def get_updated_at(self, obj):
+        """
+        Returns time using "naturaltime" from Django's "humanize module" to
+        display timestamp in a more user friendly way.
+        """
         return naturaltime(obj.updated_at)
 
     class Meta:
