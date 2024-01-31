@@ -6,10 +6,6 @@ project with Code Institute and the refactoring of this view is
 sepcifically based on the "CommentList and CommentDetail generic views"
 lesson here:
 https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/courseware/601b5665c57540519a2335bfbcb46d93/10d957d204794dbf9a4410792a58f8eb/
-
-Note:
-    The view relies on Django's built-in 404 handling for object not found
-    errors.
 """
 
 # Import necessary Django and DRF modules
