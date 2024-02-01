@@ -31,21 +31,20 @@ class PlantInFocus(models.Model):
 
     # Chosen from dropdown menu.
     month = models.IntegerField(choices=MONTH_CHOICES, blank=False)
-    common_name = models.CharField(max_length=255, blank=False)
+    focus_plant_name = models.CharField(max_length=255, blank=False)
+    # Remember to add route!
+    focus_plant_image = models.ImageField(
+        upload_to="images/",
+        default="default_image",
+    )
     environment = models.TextField(blank=False)
     culinary_uses = models.TextField(blank=False)
     medicinal_uses = models.TextField(blank=False)
     folklore = models.TextField(blank=True)
-    lookalikes = models.TextField(blank=False)
 
+    lookalike_plant_name = models.CharField(max_length=255, blank=False)
     # Remember to add route!
-    plant_image = models.ImageField(
-        upload_to="images/",
-        default="default_image",
-    )
-
-    # Remember to add route!
-    lookalike_image = models.ImageField(
+    lookalike_plant_image = models.ImageField(
         upload_to="images/",
         default="default_lookalike",
     )
