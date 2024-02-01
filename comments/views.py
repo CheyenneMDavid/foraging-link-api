@@ -50,7 +50,7 @@ class CommentList(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Inherits from "RetrieveUpdateDestroyAPIView"
-    Retrieves a comment, or update or delete it by id if you own it byt using
+    Retrieves a comment, or update or delete it by id if you own it by using
     the permission "IsOwnerOrReadOnly"
     """
 

@@ -40,7 +40,7 @@ class CourseCreate(generics.CreateAPIView):
 
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    # Permission to ensure it can only be created by someone who is authorised.
+    # Permission to ensure it can only be Created by someone who is authorised.
     permission_classes = [IsAdminUser]
 
 
@@ -53,5 +53,6 @@ class CourseUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    # Permission to ensure it can only be created by someone who is authorised.
+    # Permission to ensure a record can only be Read, Updated or Deleted by
+    # someone who is an Admin.
     permission_classes = [IsAdminUser]

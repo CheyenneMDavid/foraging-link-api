@@ -1,7 +1,6 @@
 """
 Purpose of the CourseRegistrations model is to store information about courses
-offered
-within the main application.
+offered within the main application.
 """
 from django.db import models
 from django.contrib.auth.models import User
@@ -22,8 +21,8 @@ class CourseRegistration(models.Model):
     additinal back end logic when added.
     """
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    name = models.ForeignKey(User, on_delete=models.CASCADE)
+    course_title = models.ForeignKey(Course, on_delete=models.CASCADE)
+    user_name = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=20)
     registration_date = models.DateTimeField(auto_now=True)
@@ -41,4 +40,4 @@ class CourseRegistration(models.Model):
     ice_number = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.name.username
+        return self.user_name.username
