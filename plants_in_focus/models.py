@@ -30,25 +30,25 @@ class PlantInFocus(models.Model):
     ]
 
     # Chosen from dropdown menu.
-    month = models.IntegerField(choices=MONTH_CHOICES, blank=False)
-    focus_plant_name = models.CharField(max_length=255, blank=False)
+    month = models.IntegerField(choices=MONTH_CHOICES)
+    featured_item = models.CharField(max_length=255)
     # Remember to add route!
-    focus_plant_image = models.ImageField(
+    featured_item_image = models.ImageField(
         upload_to="images/",
         default="default_image",
     )
-    environment = models.TextField(blank=False)
-    culinary_uses = models.TextField(blank=False)
-    medicinal_uses = models.TextField(blank=False)
-    folklore = models.TextField(blank=True)
+    environment = models.TextField()
+    culinary_uses = models.TextField()
+    medicinal_uses = models.TextField()
+    folklore = models.TextField()
 
-    lookalike_plant_name = models.CharField(max_length=255, blank=False)
+    lookalike_item = models.CharField(max_length=255, blank=True)
     # Remember to add route!
-    lookalike_plant_image = models.ImageField(
+    lookalike_item_image = models.ImageField(
         upload_to="images/",
-        default="default_lookalike",
+        blank=True,
     )
 
     # pylint: disable=invalid-str-returned
     def __str__(self):
-        return self.common_name
+        return self.featured_item
