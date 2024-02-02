@@ -35,19 +35,11 @@ class PlantInFocus(models.Model):
     # Remember to add route!
     featured_item_image = models.ImageField(
         upload_to="images/",
-        default="default_image",
     )
     environment = models.TextField()
     culinary_uses = models.TextField()
     medicinal_uses = models.TextField()
     folklore = models.TextField()
-
-    lookalike_item = models.CharField(max_length=255, blank=True)
-    # Remember to add route!
-    lookalike_item_image = models.ImageField(
-        upload_to="images/",
-        blank=True,
-    )
 
     # pylint: disable=invalid-str-returned
     def __str__(self):
