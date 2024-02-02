@@ -37,4 +37,5 @@ urlpatterns = [
     path("", include("followers.urls")),
     path("", include("courses.urls")),
     path("", include("course_registrations.urls")),
+    path("", include("plants_in_focus.urls")),
 ]

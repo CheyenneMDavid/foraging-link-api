@@ -21,9 +21,9 @@ from .serializers import CourseSerializer
 class CourseList(generics.ListAPIView):
     """
     This view inherits from "ListAPIView" and ONLY retrives and then presents
-    them in a read-only format.  Using the List APIView like this allows it to
-    have the permission class of "AllowAny", enabling a user to read the
-    content whether they are authenticated or not.
+    the instances in a read-only format.  Using the List APIView like this
+    allows it to have the permission class of "AllowAny", enabling a user to
+    read the content whether they are authenticated or not.
     """
 
     queryset = Course.objects.all()
@@ -35,7 +35,7 @@ class CourseList(generics.ListAPIView):
 class CourseCreate(generics.CreateAPIView):
     """
     This inherits from "CreateAPIView" and as such is assigned the permission
-    class of "IsAdmin" so that nobody else can make any changes to them.
+    class of "IsAdmin" so that nobody else can make any changes to the instances
     """
 
     queryset = Course.objects.all()
