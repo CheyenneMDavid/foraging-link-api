@@ -9,7 +9,8 @@ https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/cour
 """
 
 from rest_framework.permissions import AllowAny, IsAdminUser
-from rest_framework import generics
+from rest_framework import generics, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import PlantInFocus
 from .serializers import PlantInFocusSerializer
 
@@ -22,10 +23,26 @@ class PlantInFocusList(generics.ListAPIView):
     read the content whether they are authenticated or not.
     """
 
+    # Using "all()" to fetch all instances
     queryset = PlantInFocus.objects.all()
     serializer_class = PlantInFocusSerializer
     # Permission class that make it available to read by anyone.
     permission_classes = [AllowAny]
+
+    # Configuration of "filters" and "search"
+    filter_backends = [
+        filters.OrderingFilter,
+        filters.SearchFilter,
+        DjangoFilterBackend,
+    ]
+
+    # Definig the fields that will be used for searching the posts.
+    search_fields = [
+        "month",
+        "environment",
+        "culinary_uses",
+        "folklore",
+    ]
 
 
 class PlantInFocusCreate(generics.CreateAPIView):
