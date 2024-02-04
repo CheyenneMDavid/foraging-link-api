@@ -31,7 +31,7 @@ class PlantInFocus(models.Model):
 
     # Chosen from dropdown menu.
     month = models.IntegerField(choices=MONTH_CHOICES)
-    featured_item = models.CharField(max_length=255)
+    featured_item_name = models.CharField(max_length=255)
     # Remember to add route!
     featured_item_image = models.ImageField(
         upload_to="images/",
