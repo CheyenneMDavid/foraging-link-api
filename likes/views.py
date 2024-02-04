@@ -9,6 +9,7 @@ https://learn.codeinstitute.net/courses/course-v1:CodeInstitute+DRF+2021_T1/cour
 """
 # Importing necessary modules
 from rest_framework import generics, permissions
+from django_filters.rest_framework import DjangoFilterBackend
 from foraging_api.permissions import IsOwnerOrReadOnly
 from likes.models import Like
 from likes.serializers import LikeSerializer
@@ -28,6 +29,9 @@ class LikeList(generics.ListCreateAPIView):
     serializer_class = LikeSerializer
     # Set to "IsAuthenticatedOrReadOnly"
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["post", "owner"]
 
     def perform_create(self, serializer):
         """

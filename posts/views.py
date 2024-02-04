@@ -38,23 +38,27 @@ class PostList(generics.ListCreateAPIView):
         comments_count=Count("comment", distinct=True),
     ).order_by("-created_at")
 
+    # Configuration of "filters" and "search"
     filter_backends = [
         filters.OrderingFilter,
         filters.SearchFilter,
         DjangoFilterBackend,
     ]
 
+    # Defining the fields to filter the posts.
     filterset_fields = [
         "owner__followed__owner__profile",
         "likes__owner__profile",
         "owner__profile",
     ]
 
+    # Definig the fields that will be used for searching the posts.
     search_fields = [
         "owner__username",
         "title",
     ]
 
+    # Defining the order of the posts.
     ordering_fields = [
         "likes_count",
         "comments_count",

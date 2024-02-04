@@ -29,7 +29,13 @@ class LikeSerializer(serializers.ModelSerializer):
         """
 
         model = Like
-        fields = ["id", "created_at", "owner", "post"]
+        fields = [
+            "id",
+            "created_at",
+            "owner",
+            "post",
+            "comment",
+        ]
 
     def create(self, validated_data):
         """
