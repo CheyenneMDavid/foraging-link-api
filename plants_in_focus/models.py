@@ -43,4 +43,4 @@ class PlantInFocus(models.Model):
 
     # pylint: disable=invalid-str-returned
     def __str__(self):
-        return self.featured_item
+        return self.featured_item_name
