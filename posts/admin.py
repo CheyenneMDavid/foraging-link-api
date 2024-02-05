@@ -20,7 +20,7 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ["title", "content"]
 
     # Fields that are used to filter the searches.
-    list_filter = ("created_at", "updated_at")
+    list_filter = ("created_at", "updated_at", "owner")
 
 
 # Registering the PostAdmin configuration
