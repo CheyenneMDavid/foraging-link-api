@@ -24,8 +24,13 @@ class Profile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # Automatically updates the timestamp when the profile is changed.
     updated_at = models.DateTimeField(auto_now=True)
-    # Both the name and user_bio fields allow for blank input.
-    name = models.CharField(max_length=255, blank=True)
+
+    # Originally I had a name field as part of this model, because I felt that
+    # it completed what a profile model should contain.  However, when I added
+    # the additional functionality of the profile model to the django panel, I
+    # realised that it was redundant because of django's built in user model,
+    # so I've removed it.
+
     # Optional information about self, by user.
     user_bio = models.TextField(blank=True)
     # Uses a default image for uploads if none is provided.
@@ -47,7 +52,12 @@ class Profile(models.Model):
 
 
 # Automatically creates a Profile when a new User is created.
-def create_profile(sender, instance, created, **kwargs):
+# Using an underscore to stop the linting messages, and more importantly,
+# explain to a reader that these are unused variables as per the "Rationale"
+# and advice found here:
+# https://peps.python.org/pep-0640/#:~:text=with%20each%20other.-,
+# Rationale,is%20not%20a%20special%20variable.
+def create_profile(_sender, instance, created, **_kwargs):
     """
     Signal handler to create a profile when a new User is created.
     """
